@@ -3,6 +3,7 @@ import java.util.Date;
 public class Construction {
 
     private String projectID;
+    private String projectName;
     private String projectCategory;
     private String projectLocation;
     private Date startDate;
@@ -11,11 +12,13 @@ public class Construction {
     private double budget;
     private String projectStatus;
     private String progressStatus;
+    private String clientName
 
     //contructor
     //default
     Construction(){
         projectID = null;
+        clientName = null;
         projectCategory = null;
         projectLocation = null ;
         startDate = null;
@@ -26,8 +29,9 @@ public class Construction {
         progressStatus = null;
     }
     //normal
-    Construction(String pi, String pc, String pl, Date sd, int et, Date ed, double b, String ps, String pros){
+    Construction(String pi,String c,  String pc, String pl, Date sd, int et, Date ed, double b, String ps, String pros){
         projectID = pi;
+        clientName = c;
         projectCategory = pc;
         projectLocation = pl ;
         startDate = sd;
@@ -42,6 +46,9 @@ public class Construction {
     //getter method
     public String getProjectID(){
         return projectID;
+    }
+    public String getProjectName(){
+        return projectName;
     }
     public String getProjectCategory(){
         return projectCategory;
@@ -72,6 +79,9 @@ public class Construction {
     public void setProjectID(String pi){
         projectID = pi;
     }
+    public void setClient(String c){
+        clientName = c;
+    }
     public void setProjectCategory(String pc){
         projectCategory = pc;
     }
@@ -99,7 +109,7 @@ public class Construction {
 
     //print method
     public String toString(){
-        return "\nProject ID: " + projectID + "\nProject Category: " +
+        return "\nProject ID: " + projectID +"\nClient: "+ clientName+ "\nProject Category: " +
                 projectCategory + "\nProject Location: " +projectLocation +
                 "\nProject Start Date: " +startDate + "\n Estimated time: " +estimatedTime +
                 "\nProject End Date: " +endDate + "\nBudget: " +
