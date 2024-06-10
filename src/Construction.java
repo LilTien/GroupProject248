@@ -12,12 +12,13 @@ public class Construction {
     private double budget;
     private String projectStatus;
     private String progressStatus;
-    private String clientName
+    private String clientName;
 
     //contructor
     //default
     Construction(){
         projectID = null;
+        projectName = null;
         clientName = null;
         projectCategory = null;
         projectLocation = null ;
@@ -29,8 +30,9 @@ public class Construction {
         progressStatus = null;
     }
     //normal
-    Construction(String pi,String c,  String pc, String pl, Date sd, int et, Date ed, double b, String ps, String pros){
+    Construction(String pi, String pj,  String pc, String pl, Date sd, int et, Date ed, double b, String ps, String pros ,String c){
         projectID = pi;
+        projectName = pj;
         clientName = c;
         projectCategory = pc;
         projectLocation = pl ;
