@@ -1,0 +1,25 @@
+P001;C;Bukit Bintang, Kuala Lumpur;2024-05-15;90;2024-08-13;150000;approve;completed
+P002;I;Georgetown, Penang;2024-06-01;120;2024-09-29;500000;approve;in progress
+P003;R;Danga Bay, Johor Bahru;2024-05-20;60;2024-07-19;200000;approve;cancelled
+P004;C;Petaling Jaya, Selangor;2024-06-10;150;2024-11-07;300000;pending;NA
+P005;I;Alor Setar, Kedah;2024-07-03;180;2024-12-30;600000;approve;in progress
+P006;R;Ipoh, Perak;2024-06-25;90;2024-09-23;250000;approve;completed
+P007;C;KLCC, Kuala Lumpur;2024-07-15;120;2024-11-12;400000;planning;delay
+P008;I;Kota Kinabalu, Sabah;2024-08-01;240;2025-04-29;1000000;pending;NA
+P009;R;Kuching, Sarawak;2024-07-20;90;2024-10-18;180000;approve;completed
+P010;C;Butterworth, Penang;2024-08-10;180;2025-02-07;700000;approve;in progress
+P011;I;Shah Alam, Selangor;2024-09-05;300;2025-06-03;1500000;pending;NA
+P012;R;Mont Kiara, Kuala Lumpur;2024-08-25;120;2024-12-23;200000;approve;delay
+P013;C;Tebrau, Johor Bahru;2024-09-20;150;2025-02-17;400000;pending;NA
+P014;I;Taiping, Perak;2024-10-15;180;2025-04-13;800000;approve;in progress
+P015;R;Langkawi, Kedah;2024-10-10;90;2024-12-08;100000;approve;completed
+P016;C;Miri, Sarawak;2024-11-05;180;2025-05-04;600000;approve;in progress
+P017;I;Cheras, Kuala Lumpur;2024-11-20;240;2025-07-19;1200000;pending;NA
+P018;R;Sandakan, Sabah;2024-12-10;120;2025-03-09;300000;approve;in progress
+P019;C;Kangar, Perlis;2024-12-25;90;2025-03-25;100000;approve;completed
+P020;I;Iskandar Puteri, Johor Bahru;2025-01-10;180;2025-07-09;900000;pending;NA
+P021;R;Subang Jaya, Selangor;2025-01-25;120;2025-05-25;500000;approve;in progress
+P022;C;Bayan Lepas, Penang;2025-02-10;150;2025-07-10;800000;pending;NA
+P023;I;Bangsar, Kuala Lumpur;2025-03-05;300;2026-01-01;2000000;approve;in progress
+P024;R;Teluk Intan, Perak;2025-02-20;90;2025-05-21;150000;approve;completed
+P025;C;Klang, Selangor;2025-03-15;180;2025-09-11;1000000;approve;in progress
