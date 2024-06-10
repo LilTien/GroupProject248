@@ -111,7 +111,7 @@ public class Construction {
 
     //print method
     public String toString(){
-        return "\nProject ID: " + projectID +"\nClient: "+ clientName+ "\nProject Category: " +
+        return "\nProject ID: " + projectID +"\nProject Name: " + projectName+ clientName+ "\nProject Category: " +
                 projectCategory + "\nProject Location: " +projectLocation +
                 "\nProject Start Date: " +startDate + "\n Estimated time: " +estimatedTime +
                 "\nProject End Date: " +endDate + "\nBudget: " +
