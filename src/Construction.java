@@ -3,8 +3,7 @@ import java.util.Date;
 public class Construction {
 
     private String projectID;
-    private String projectName;
-    private String projectCategory;
+    private char projectCategory;
     private String projectLocation;
     private Date startDate;
     private int estimatedTime;
@@ -18,9 +17,8 @@ public class Construction {
     //default
     Construction(){
         projectID = null;
-        projectName = null;
         clientName = null;
-        projectCategory = null;
+        projectCategory = 0;
         projectLocation = null ;
         startDate = null;
         estimatedTime =0;
@@ -30,9 +28,8 @@ public class Construction {
         progressStatus = null;
     }
     //normal
-    Construction(String pi, String pj,  String pc, String pl, Date sd, int et, Date ed, double b, String ps, String pros ,String c){
+    Construction(String pi,   char pc, String pl, Date sd, int et, Date ed, double b, String ps, String pros ,String c){
         projectID = pi;
-        projectName = pj;
         clientName = c;
         projectCategory = pc;
         projectLocation = pl ;
@@ -49,10 +46,8 @@ public class Construction {
     public String getProjectID(){
         return projectID;
     }
-    public String getProjectName(){
-        return projectName;
-    }
-    public String getProjectCategory(){
+    public String getClientName(){return clientName;}
+    public char getProjectCategory(){
         return projectCategory;
     }
     public String getProjectLocation(){
@@ -84,7 +79,7 @@ public class Construction {
     public void setClient(String c){
         clientName = c;
     }
-    public void setProjectCategory(String pc){
+    public void setProjectCategory(char pc){
         projectCategory = pc;
     }
     public void setProjectLocation(String pl){
@@ -111,7 +106,7 @@ public class Construction {
 
     //print method
     public String toString(){
-        return "\nProject ID: " + projectID +"\nProject Name: " + projectName+ clientName+ "\nProject Category: " +
+        return "\nProject ID: " + projectID +"\nProject Name: " +  clientName+ "\nProject Category: " +
                 projectCategory + "\nProject Location: " +projectLocation +
                 "\nProject Start Date: " +startDate + "\n Estimated time: " +estimatedTime +
                 "\nProject End Date: " +endDate + "\nBudget: " +
