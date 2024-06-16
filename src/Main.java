@@ -7,13 +7,84 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Construction newConstruct = new Construction();
         Scanner userIn = new Scanner(System.in);
         boolean userInput = false;
         int userInInt  = 0 ;
-        File constructionFile = new File("constructionData.txt") ;
         LinkedList constructionList = new LinkedList();
+        while (!userInput){
+            System.out.println("File name : ");
+            String fileName = userIn.next();
 
+            constructionList =  fileToList(fileName);
+            if (constructionList == null){
+                System.err.println("Error to open the file");
+            }else{
+                userInput = true;
+            }
+        }
+
+
+        System.out.println("Please Choose: ");
+        System.out.println("1. View data ");
+        System.out.println("2. Add data ");
+        System.out.println("3. Remove data ");
+        System.out.println("4. Split data ");
+        System.out.println("5. Search and update data ");
+        userInInt = userIn.nextInt();
+        userIn.nextLine();
+
+        switch (userInInt){
+            case 1:
+                System.out.println("-----------------------");
+                System.out.println("View data");
+                System.out.println("-----------------------");
+                displayList(constructionList);
+                break;
+            case 2:
+                System.out.println("-----------------------");
+                System.out.println("Add Data");
+                System.out.println("-----------------------");
+                break;
+            case 3:
+                System.out.println("-----------------------");
+                System.out.println("Remove Data");
+                System.out.println("-----------------------");
+                break;
+            case 4:
+                System.out.println("-----------------------");
+                System.out.println("Split data based on budget");
+                System.out.println("-----------------------");
+                splitData(constructionList);
+                break;
+            case 5:
+                System.out.println("-----------------------");
+                System.out.println("SEARCH AND UPDATE DATA");
+                System.out.println("-----------------------");
+                System.out.println("Do you want to search and update of search only: ");
+                System.out.println("Do you want to search by :");
+                System.out.println("1. Project ID");
+                System.out.println("2. Client Name");
+                System.out.println("3. Project Location");
+                System.out.print("Your option: ");
+                int searchOption = userIn.nextInt();
+                userIn.nextLine();
+                System.out.print("Enter key word: ");
+                String key = userIn.nextLine();
+                findData(constructionList, searchOption, key, true);
+
+
+
+                break;
+            default:
+                System.err.println("Wrong input");
+        }
+
+    }
+
+    //file to list function
+    public static LinkedList fileToList(String fileName) throws IOException{
+        File constructionFile = new File(fileName) ;
+        LinkedList constructionList = new LinkedList();
         try{
             Scanner fileScan = new Scanner(constructionFile);
 
@@ -46,8 +117,8 @@ public class Main {
                 String projectProgress = lineScan.next();
                 String clientName = lineScan.next();
                 Construction tempCons = new Construction(projectId, proCat, proLoc, startDate,
-                                                        estimatedDate, endDate, budget, projectStatus,
-                                                        projectProgress, clientName);
+                        estimatedDate, endDate, budget, projectStatus,
+                        projectProgress, clientName);
                 //System.out.println("temp cons" + tempCons);
                 constructionList.insertAtBack(tempCons);
                 //System.out.println((Construction)constructionList.getFirst());
@@ -56,60 +127,7 @@ public class Main {
         }catch (Error e){
             System.err.println("Can't open the file");
         }
-
-        System.out.println("Please Choose: ");
-        System.out.println("1. View data ");
-        System.out.println("2. Add data ");
-        System.out.println("3. Remove data ");
-        System.out.println("4. Split data ");
-        System.out.println("5. Search and update data ");
-        userInInt = userIn.nextInt();
-        userIn.nextLine();
-
-        switch (userInInt){
-            case 1:
-                System.out.println("-----------------------");
-                System.out.println("View data");
-                System.out.println("-----------------------");
-                break;
-            case 2:
-                System.out.println("-----------------------");
-                System.out.println("Add Data");
-                System.out.println("-----------------------");
-                break;
-            case 3:
-                System.out.println("-----------------------");
-                System.out.println("Remove Data");
-                System.out.println("-----------------------");
-                break;
-            case 4:
-                System.out.println("-----------------------");
-                System.out.println("Split data");
-                System.out.println("-----------------------");
-                break;
-            case 5:
-                System.out.println("-----------------------");
-                System.out.println("SEARCH AND UPDATE DATA");
-                System.out.println("-----------------------");
-                System.out.println("Do you want to search and update of search only: ");
-                System.out.println("Do you want to search by :");
-                System.out.println("1. Project ID");
-                System.out.println("2. Client Name");
-                System.out.println("3. Project Location");
-                System.out.print("Your option: ");
-                int searchOption = userIn.nextInt();
-                userIn.nextLine();
-                System.out.print("Enter key word: ");
-                String key = userIn.nextLine();
-                findData(constructionList, searchOption, key, true);
-
-
-
-                break;
-            default:
-                System.err.println("Wrong input");
-        }
-
+        return constructionList;
     }
     //find data function
     public static boolean findData (LinkedList list,int field , String key , boolean display) throws IOException{
@@ -169,6 +187,38 @@ public class Main {
             updateList(list , updateKey );
         }
         return found;
+    }
+    public static void splitData(LinkedList list)throws IOException{
+        LinkedList listBelow = new LinkedList();
+        LinkedList listAbove = new LinkedList();
+        System.out.print("What is the budget you want to split: ");
+        Scanner userIn = new Scanner(System.in);
+        double budget = userIn.nextDouble();
+        System.out.print("Name for file RM"+ budget + " above : ");
+        String firstFile = userIn.next();
+        System.out.print("Name for file RM" + budget + " below: ");
+        String secondFile = userIn.next();
+
+        Object obj = list.getFirst();
+        boolean first = false, second = false;
+
+        while(obj != null){
+            Construction tempConst = (Construction) obj;
+            if(tempConst.getBudget() >= budget){
+                listAbove.insertAtBack(tempConst);
+                first = true;
+            }else{
+                listBelow.insertAtBack(tempConst);
+                second = true;
+            }
+            obj = list.getNext();
+        }
+        if(first){
+            writeListtoFile(listAbove, firstFile);
+        }
+        if(second){
+            writeListtoFile(listBelow, secondFile);
+        }
     }
     public static void updateList(LinkedList list , String projectID) throws IOException{
         //P001;C;Bukit Bintang, Kuala Lumpur;2024-05-15;90;2024-08-13;150000;approve;completed;Abdul
