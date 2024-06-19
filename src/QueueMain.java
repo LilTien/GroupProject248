@@ -5,27 +5,25 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Scanner;
 
-public class Main {
-    private static int currentNumber =0;
-    public static void main(String[] args) throws IOException {
+public class QueueMain {
 
+    private static int currentNumber = 0;
+    public static void main(String[] args) throws IOException {
         Scanner userIn = new Scanner(System.in);
         boolean userInput = false;
         int userInInt  = 0 ;
-        LinkedList constructionList = new LinkedList();
+        Queue constructionQ = new Queue();
         while (!userInput){
             System.out.println("File name : ");
             String fileName = userIn.next();
 
-            constructionList =  fileToList(fileName);
-            if (constructionList == null){
+            constructionQ =  fileToList(fileName);
+            if (constructionQ == null){
                 System.err.println("Error to open the file");
             }else{
                 userInput = true;
             }
         }
-
-
 
 
         System.out.println("Please Choose: ");
@@ -42,7 +40,7 @@ public class Main {
                 System.out.println("-----------------------");
                 System.out.println("View data");
                 System.out.println("-----------------------");
-                displayList(constructionList);
+                displayQueue(constructionQ);
                 break;
             case 2:
                 System.out.println("-----------------------");
@@ -58,7 +56,7 @@ public class Main {
                 System.out.println("-----------------------");
                 System.out.println("Split data based on budget");
                 System.out.println("-----------------------");
-                splitData(constructionList);
+                splitData(constructionQ);
                 break;
             case 5:
                 System.out.println("-----------------------");
@@ -74,20 +72,18 @@ public class Main {
                 userIn.nextLine();
                 System.out.print("Enter key word: ");
                 String key = userIn.nextLine();
-                findData(constructionList, searchOption, key, true);
-
-
-
+                findData(constructionQ, searchOption, key, true);
                 break;
             default:
                 System.err.println("Wrong input");
         }
 
     }
+
     //file to list function
-    public static LinkedList fileToList(String fileName) throws IOException{
+    public static Queue fileToList(String fileName) throws IOException{
         File constructionFile = new File(fileName) ;
-        LinkedList constructionList = new LinkedList();
+        Queue constructionQ = new Queue();
         try{
             Scanner fileScan = new Scanner(constructionFile);
 
@@ -123,24 +119,24 @@ public class Main {
                         estimatedDate, endDate, budget, projectStatus,
                         projectProgress, clientName);
                 //System.out.println("temp cons" + tempCons);
-                constructionList.insertAtBack(tempCons);
+                constructionQ.enqueue(tempCons);
                 //System.out.println((Construction)constructionList.getFirst());
             }
 
         }catch (Error e){
             System.err.println("Can't open the file");
         }
-        return constructionList;
+        return constructionQ;
     }
     //find data function
-    public static boolean findData (LinkedList list,int field , String key , boolean display) throws IOException{
-        Object obj = list.getFirst();
+    public static boolean findData (Queue q,int field , String key , boolean display) throws IOException{
+        Object obj = q.dequeue();
         boolean found = false;
         String [] stringField = {"Project ID", "Client Name", "Project Location"};
         System.out.println("\n\nAll "+stringField[field-1] +" : " + key);
-        LinkedList updateList = new LinkedList();
-        int i = 0;
-        while (obj != null){
+        Queue updateQ = new Queue();
+        Queue tempQ = new Queue();
+        while (!q.isEmpty()){
             Construction temp = (Construction) obj;
             switch(field){
                 case 1:
@@ -174,12 +170,15 @@ public class Main {
                     System.err.println("Wrong input !!!");
                     return false;
             }
-
-
+            tempQ.enqueue(temp);
             if(found){
-                updateList.insertAtBack(temp);
+                updateQ.enqueue(temp);
             }
-            obj = list.getNext();
+            obj = q.dequeue();
+        }
+        //put back to data to original queue
+        while(!tempQ.isEmpty()){
+            q.enqueue(tempQ.dequeue());
         }
         System.out.println(!found ? "\n\nThere is no match data" : "");
         boolean update = getYesOrNo("Do you want to update the data");
@@ -187,13 +186,13 @@ public class Main {
         if(update){
             System.out.print("Project ID you want to update : ");
             String updateKey = userIn.next();
-            updateList(list , updateKey );
+            updateQueue(q , updateKey );
         }
         return found;
     }
-    public static void splitData(LinkedList list)throws IOException{
-        LinkedList listBelow = new LinkedList();
-        LinkedList listAbove = new LinkedList();
+    public static void splitData(Queue q)throws IOException{
+        Queue belowQ = new Queue();
+        Queue aboveQ = new Queue();
         System.out.print("What is the budget you want to split: ");
         Scanner userIn = new Scanner(System.in);
         double budget = userIn.nextDouble();
@@ -202,34 +201,43 @@ public class Main {
         System.out.print("Name for file RM" + budget + " below: ");
         String secondFile = userIn.next();
 
-        Object obj = list.getFirst();
+        Object obj = q.dequeue();
+        Queue tempQ = new Queue();
         boolean first = false, second = false;
 
-        while(obj != null){
+        while(!q.isEmpty()){
             Construction tempConst = (Construction) obj;
             if(tempConst.getBudget() >= budget){
-                listAbove.insertAtBack(tempConst);
+                aboveQ.enqueue(tempConst);
                 first = true;
             }else{
-                listBelow.insertAtBack(tempConst);
+                belowQ.enqueue(tempConst);
                 second = true;
             }
-            obj = list.getNext();
+            obj = q.dequeue();
+            tempQ.enqueue(tempConst);
         }
         if(first){
-            writeListtoFile(listAbove, firstFile);
+            writeQueuetoFile(aboveQ, firstFile);
         }
         if(second){
-            writeListtoFile(listBelow, secondFile);
+            writeQueuetoFile(belowQ, secondFile);
+        }
+        tempToOriginalQueue(tempQ, q);
+    }
+
+    public static void tempToOriginalQueue(Queue temp, Queue ori){
+        while (!temp.isEmpty()){
+            ori.enqueue(temp.dequeue());
         }
     }
-    public static void updateList(LinkedList list , String projectID) throws IOException{
+    public static void updateQueue(Queue q , String projectID) throws IOException{
         //P001;C;Bukit Bintang, Kuala Lumpur;2024-05-15;90;2024-08-13;150000;approve;completed;Abdul
         boolean find = false;
         try {
-            Object obj = list.getFirst();
-
-            while(obj != null){
+            Object obj = q.dequeue();
+            Queue tempQ = new Queue();
+            while(!q.isEmpty()){
                 Construction temp = (Construction) obj;
                 if(temp.getProjectID().equalsIgnoreCase(projectID)){
                     try {
@@ -291,8 +299,10 @@ public class Main {
                         System.err.println(e);
                     }
                 }
-                obj = list.getNext();
+                obj = q.dequeue();
+                tempQ.enqueue(temp);
             }
+            tempToOriginalQueue(tempQ, q);
 
         }catch(Error e){
             System.err.println("Have a problem !! try again later.... ");
@@ -300,25 +310,28 @@ public class Main {
         if(!find){
             System.err.println("Cannot find project ID you want!! please try again");
         }else{
-            writeListtoFile(list, "constructionData.txt");
+            writeQueuetoFile(q, "constructionData.txt");
         }
 
     }
 
-    public static void writeListtoFile(LinkedList list, String fileName) throws  IOException{
+    public static void writeQueuetoFile(Queue q, String fileName) throws  IOException{
         FileWriter fileWrite = new FileWriter(fileName);
         BufferedWriter bufferFile = new BufferedWriter(fileWrite);
         try{
-            Object obj = list.getFirst();
-            while(obj != null){
+            Object obj = q.dequeue();
+            Queue tempQ = new Queue();
+            while(!q.isEmpty()){
                 Construction tempConst = (Construction) obj;
                 String concat = tempConst.getProjectID()+ ";" + tempConst.getProjectCategory()+";"+ tempConst.getProjectLocation()+";"+
-                                dateToString(tempConst.getStartDate()) + ";" + tempConst.getEstimatedTime() + ";" + dateToString(tempConst.getEndDate())+";"+
-                                tempConst.getBudget() + ";" + tempConst.getProjectStatus() + ";" + tempConst.getProgressStatus() + ";" + tempConst.getClientName();
+                        dateToString(tempConst.getStartDate()) + ";" + tempConst.getEstimatedTime() + ";" + dateToString(tempConst.getEndDate())+";"+
+                        tempConst.getBudget() + ";" + tempConst.getProjectStatus() + ";" + tempConst.getProgressStatus() + ";" + tempConst.getClientName();
                 bufferFile.write(concat);
                 bufferFile.newLine();
-                obj = list.getNext();
+                obj = q.dequeue();
+                tempQ.enqueue(tempConst);
             }
+            tempToOriginalQueue(tempQ, q);
             bufferFile.flush();
             fileWrite.close();
             bufferFile.close();
@@ -327,13 +340,16 @@ public class Main {
             System.err.println("Cannot update the file!!!");
         }
     }
-    public static void displayList (LinkedList list){
-        Object obj = list.getFirst();
-        while (obj != null){
+    public static void displayQueue (Queue q){
+        Object obj = q.dequeue();
+        Queue tempQ = new Queue();
+        while (!q.isEmpty()){
             Construction tempConst = (Construction) obj;
             System.out.println(tempConst);
-            obj = list.getNext();
+            obj = q.dequeue();
+            tempQ.enqueue(tempConst);
         }
+        tempToOriginalQueue(tempQ, q);
     }
 
     public static String dateToString(Date d){
@@ -360,6 +376,10 @@ public class Main {
             return false;
         }
     }
+
+    //public static String autoGenerateID(){
+
+    //}
     public static Date getDates(){
         Scanner userIn = new Scanner(System.in);
         int year, month , day;
