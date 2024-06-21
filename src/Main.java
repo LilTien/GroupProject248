@@ -1,14 +1,16 @@
+import com.sun.source.tree.DeconstructionPatternTree;
+
+import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.Date;
 import java.util.Scanner;
-
+//hell
 public class Main {
-    private static int currentNumber =0;
     public static void main(String[] args) throws IOException {
-
         Scanner userIn = new Scanner(System.in);
         boolean userInput = false;
         int userInInt  = 0 ;
@@ -26,14 +28,13 @@ public class Main {
         }
 
 
-
-
         System.out.println("Please Choose: ");
         System.out.println("1. View data ");
         System.out.println("2. Add data ");
         System.out.println("3. Remove data ");
         System.out.println("4. Split data ");
         System.out.println("5. Search and update data ");
+        System.out.println("6. Count Data ");
         userInInt = userIn.nextInt();
         userIn.nextLine();
 
@@ -48,11 +49,14 @@ public class Main {
                 System.out.println("-----------------------");
                 System.out.println("Add Data");
                 System.out.println("-----------------------");
+                addData(constructionList);
+
                 break;
             case 3:
                 System.out.println("-----------------------");
                 System.out.println("Remove Data");
                 System.out.println("-----------------------");
+                RemoveData(constructionList);
                 break;
             case 4:
                 System.out.println("-----------------------");
@@ -75,14 +79,68 @@ public class Main {
                 System.out.print("Enter key word: ");
                 String key = userIn.nextLine();
                 findData(constructionList, searchOption, key, true);
+                break;
 
-
-
+            case 6:
+                System.out.println("-----------------------");
+                System.out.println("      COUNT DATA       ");
+                System.out.println("-----------------------");
+                System.out.println("Enter the project type based on : ");
+                System.out.println("1. All Project");
+                System.out.println("2. Location");
+                System.out.println("3. Category");
+                System.out.println("4. Project Status / progress status");
+                System.out.println("5. Project Budget");
+                System.out.println("Your option");
+                int searchCount = userIn.nextInt();
+                countData(constructionList, searchCount, true);
                 break;
             default:
                 System.err.println("Wrong input");
         }
 
+    }
+    //remove data
+    public static void RemoveData(LinkedList list) throws IOException{
+        Scanner userIn = new Scanner(System.in);
+        boolean isRemove = false;
+        LinkedList tempLL = new LinkedList();
+        Construction removedData = null;
+
+        Object obj = list.getFirst();
+        while (obj != null){
+            Construction tempConst = (Construction) obj;
+            System.out.println(tempConst);
+            obj = list.getNext();
+        }
+
+        System.out.println("Enter the Data you want to remove : ");
+        String nameKey = userIn.nextLine();
+        isRemove = getYesOrNo("Are you sure you want to remove the data?");
+
+        System.out.println("\nEnter the file you want to write to : ");
+        String fileName = userIn.nextLine();
+
+        if(isRemove){
+            if(!list.isEmpty()) {
+                obj = list.removeFromFront();
+                while (!list.isEmpty()) {
+                    Construction reListConstruct = (Construction) obj;
+                    if(!reListConstruct.getProjectID().equalsIgnoreCase(nameKey)){
+                        tempLL.insertAtFront(reListConstruct);
+                    }
+                    obj = list.removeFromFront();
+                }
+            }else{
+                System.out.println("The List is empty");
+            }
+
+            while(!tempLL.isEmpty()){
+                obj = tempLL.removeFromFront();
+                list.insertAtFront(obj);
+            }
+            writeListtoFile(list, fileName);
+        }
     }
     //file to list function
     public static LinkedList fileToList(String fileName) throws IOException{
@@ -376,4 +434,183 @@ public class Main {
         return tarikh;
     }
 
+    //Fariz : Count Data
+    public static boolean countData (LinkedList list,int field , boolean display) throws IOException{
+        Object obj = list.getFirst();
+        boolean found = false;
+        String outputList = "", outputChoice = null;
+        int count = 0, i = 0;
+
+        int choice = field;
+        LinkedList updateList = new LinkedList();
+        Scanner in = new Scanner(System.in);
+
+            Construction temp = (Construction) obj;
+            switch(choice){
+                case 1:
+
+                    while (obj != null) {
+                        temp = (Construction) obj;
+                        found = true;
+                        outputChoice = "List of all Project ";
+                        outputList = outputList + temp.toString() + "\n";
+                        count++;
+                        obj = list.getNext();
+                    }
+                    break;
+                case 2:
+
+                    outputChoice = "Based on Location ";
+                    System.out.println("Enter the Location you want to found : ");
+                    String location = in.nextLine();
+
+
+                    while (obj != null){
+                        temp = (Construction) obj;
+                        if (temp.getProjectLocation().contains(location)){
+                            found = true;
+                            outputList = "\n" + outputList + temp.toString() + "\n";
+                            count++;
+                        }
+                        obj = list.getNext();
+                    }
+                    break;
+                case 3 :
+                    outputChoice = "Based on Category ";
+                    System.out.println("Enter the Category you want to found : ");
+                    char category = in.next().charAt(0);
+
+                    while (obj != null) {
+                        temp = (Construction) obj;
+                        if (temp.getProjectCategory() == category) {
+                            found = true;
+                            outputList = "\n" + outputList + temp.toString() + "\n";
+                            count++;
+                        }
+                        obj = list.getNext();
+                    }
+                    break;
+                case 4:
+                    outputChoice = "Based on project status /  progress Status";
+                    System.out.println("Enter the progress statuts / project Status");
+                    String status = in.nextLine();
+
+                    while (obj != null){
+                        temp = (Construction) obj;
+                        if (temp.getProgressStatus().contains(status)){
+                            found = true;
+                            outputList = "\n" + outputList + temp.toString() + "\n";
+                            count++;
+                        }else if(temp.getProjectStatus().contains(status)){
+                            found = true;
+                            outputList = "\n" + outputList + temp.toString() + "\n";
+                            count++;
+                        }
+                        obj = list.getNext();
+                    }
+
+                    break;
+                case 5:
+                    outputChoice = "Based on project Budget";
+                    System.out.println("Enter the project budget");
+                    double budget = in.nextDouble();
+
+                    while (obj != null){
+                        temp = (Construction) obj;
+                        if (temp.getBudget() == budget){
+                            found = true;
+                            outputList = "\n" + outputList + temp.toString() + "\n";
+                            count++;
+                        }
+                        obj = list.getNext();
+                    }
+
+                    break;
+                default:
+                    System.err.println("Wrong input !!!");
+                    return false;
+                }
+
+                if (found){
+                    updateList.insertAtBack(temp);
+                }
+
+        System.out.println("--------------------------------");
+        System.out.println("\t" + outputChoice + "\t");
+        System.out.println("--------------------------------");
+        System.out.println(outputList);
+        System.out.println("\nThe count number of the project is " + count);
+
+        return found;
+    }
+
+    //ikmal : add Data
+    public static void addData(LinkedList list)throws IOException {
+        Scanner userInput = new Scanner(System.in);
+
+        System.out.println("Project ID:");
+        String projectID = userInput.nextLine();
+        userInput.nextLine();
+
+        System.out.println("\nClient Name: ");
+        String clientName = userInput.nextLine();
+        userInput.nextLine();
+
+        System.out.println("\nProject Category: ");
+        char projectCategory = userInput.next().charAt(0);
+        userInput.nextLine();
+
+        System.out.println("\nProject Location: ");
+        String projectLocation = userInput.nextLine();
+        userInput.nextLine();
+
+        System.out.println("\nStart Date: ");
+        Date startDate = getDates();
+        userInput.nextLine();
+
+        System.out.println("\nEnd Date: ");
+        Date endDate = getDates();
+        userInput.nextLine();
+
+        System.out.println("\nBudget: ");
+        double budget = userInput.nextDouble();
+        userInput.nextLine();
+
+        System.out.println("\nProject Status: ");
+        String projectStatus = userInput.nextLine();
+        userInput.nextLine();
+
+        System.out.println("\nProgress Status: ");
+        String progressStatus = userInput.nextLine();
+
+        System.out.println("\nEnter the file name :");
+        String fileName = userInput.nextLine();
+
+        int estimatedTime = estimatedDate(startDate, endDate);
+
+        Construction const1 = new Construction(projectID, projectCategory, projectLocation, startDate, estimatedTime, endDate, budget, projectStatus, progressStatus, clientName);
+
+        String[] keyword = {projectID + "," + projectCategory + "," + projectLocation + "," + startDate + "," + estimatedTime + "," + endDate + "," + +budget + "," + projectStatus + "," + progressStatus + "," + clientName};
+
+        System.out.println("\nData that you entered is : ");
+        System.out.println("=============================");
+        System.out.println("Project ID : " + projectID);
+        System.out.println("Project Category : " + projectCategory);
+        System.out.println("Project Location : " + projectLocation);
+        System.out.println("Start Date : " + startDate);
+        System.out.println("End Date : " + endDate);
+        System.out.println("Budget : " + budget);
+        System.out.println("Project Status : " + projectStatus);
+        System.out.println("Progress Status : " + progressStatus);
+        System.out.println("Client Name : " + clientName);
+
+        boolean  isAdd = getYesOrNo("Are you sure you want to add?");
+        if (isAdd) {
+            list.insertAtBack(const1);
+            writeListtoFile(list, fileName);
+            System.out.println("Data has successfully been added into the file.");
+        } else {
+            System.out.println("Data can't be added. Data is already in the database.");
+        }
+    }
 }
