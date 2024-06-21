@@ -3,13 +3,8 @@ import java.util.Date;
 public class tryy {
     public static void main(String[] args) {
 
-        Date myDate = new Date(125,6,17);
-        Date newDate = new Date();
-
-        char hello = 'a';
-        String concat = "";
-        concat += hello;
-        System.out.println(concat);
+        int num = 5/2;
+        System.out.println(5^7);
 
 
         /*int year = myDate.getYear() - newDate.getYear();

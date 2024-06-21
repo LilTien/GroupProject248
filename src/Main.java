@@ -14,7 +14,7 @@ public class Main {
         int userInInt  = 0 ;
         LinkedList constructionList = new LinkedList();
         while (!userInput){
-            System.out.println("File name : ");
+            System.out.print("File name : ");
             String fileName = userIn.next();
 
             constructionList =  fileToList(fileName);
@@ -48,6 +48,7 @@ public class Main {
                 System.out.println("-----------------------");
                 System.out.println("Add Data");
                 System.out.println("-----------------------");
+                addData(constructionList);
                 break;
             case 3:
                 System.out.println("-----------------------");
@@ -64,7 +65,7 @@ public class Main {
                 System.out.println("-----------------------");
                 System.out.println("SEARCH AND UPDATE DATA");
                 System.out.println("-----------------------");
-                System.out.println("Do you want to search and update of search only: ");
+                boolean update = getYesOrNo("Do you want to search and update too: ");
                 System.out.println("Do you want to search by :");
                 System.out.println("1. Project ID");
                 System.out.println("2. Client Name");
@@ -74,7 +75,7 @@ public class Main {
                 userIn.nextLine();
                 System.out.print("Enter key word: ");
                 String key = userIn.nextLine();
-                findData(constructionList, searchOption, key, true);
+                findData(constructionList, searchOption, key, true, update);
 
 
 
@@ -83,6 +84,70 @@ public class Main {
                 System.err.println("Wrong input");
         }
 
+    }
+
+    //add file
+    public static void addData(LinkedList list)throws IOException {
+        try {
+            FileWriter fileWrite = new FileWriter("constructionData.txt", true);
+            BufferedWriter bufferWrite = new BufferedWriter(fileWrite);
+
+            Scanner userInput = new Scanner(System.in);
+
+            System.out.println("Project ID:");
+            String projectID = userInput.nextLine();
+            System.out.println("\nClient Name: ");
+            String clientName = userInput.nextLine();
+            System.out.println("\nProject Category: ");
+            char projectCategory = userInput.next().charAt(0);
+            userInput.nextLine();
+            System.out.println("\nProject Location: ");
+            String projectLocation = userInput.nextLine();
+            System.out.println("\nStart Date: ");
+            Date startDate = getDates();
+            System.out.println("\nEnd Date: ");
+            Date endDate = getDates();
+            System.out.println("\nBudget: ");
+            double budget = userInput.nextDouble();
+            userInput.nextLine();
+            System.out.println("\nProject Status: ");
+            String projectStatus = userInput.nextLine();
+            System.out.println("\nProgress Status: ");
+            String progressStatus = userInput.nextLine();
+            int estimatedTime = estimatedDate(startDate, endDate);
+            Construction const1 = new Construction(projectID, projectCategory, projectLocation, startDate, estimatedTime, endDate, budget, projectStatus, progressStatus, clientName);
+
+            System.out.println("\nData that you entered is : ");
+            System.out.println("=============================");
+            System.out.println("Project ID : " + projectID);
+            System.out.println("Project Category : " + projectCategory);
+            System.out.println("Project Location : " + projectLocation);
+            System.out.println("Start Date : " + startDate);
+            System.out.println("End Date : " + endDate);
+            System.out.println("Budget : " + budget);
+            System.out.println("Project Status : " + projectStatus);
+            System.out.println("Progress Status : " + progressStatus);
+            System.out.println("Client Name : " + clientName);
+
+            boolean isAdd = getYesOrNo("\nAre you sure you want to add?");
+
+            boolean alreadyHave = findData(list , 1,projectID, false, false);
+            if(alreadyHave){
+                System.err.println("File already have");
+            }
+            if (isAdd && !alreadyHave ) {
+                list.insertAtBack(const1);
+                writeListtoFile(list,"constructionData.txt");
+                System.out.println("Data has successfully been added into the file.");
+
+            } else {
+                System.err.println("Error to put the file!!! ");
+            }
+            bufferWrite.close();
+            fileWrite.close();
+        } catch(Error e){
+            System.err.println("File can't be read.");
+        }
     }
     //file to list function
     public static LinkedList fileToList(String fileName) throws IOException{
@@ -133,7 +198,7 @@ public class Main {
         return constructionList;
     }
     //find data function
-    public static boolean findData (LinkedList list,int field , String key , boolean display) throws IOException{
+    public static boolean findData (LinkedList list,int field , String key , boolean display , boolean update) throws IOException{
         Object obj = list.getFirst();
         boolean found = false;
         String [] stringField = {"Project ID", "Client Name", "Project Location"};
@@ -174,20 +239,20 @@ public class Main {
                     System.err.println("Wrong input !!!");
                     return false;
             }
-
-
             if(found){
                 updateList.insertAtBack(temp);
             }
             obj = list.getNext();
         }
         System.out.println(!found ? "\n\nThere is no match data" : "");
-        boolean update = getYesOrNo("Do you want to update the data");
-        Scanner userIn = new Scanner(System.in);
         if(update){
-            System.out.print("Project ID you want to update : ");
-            String updateKey = userIn.next();
-            updateList(list , updateKey );
+            boolean trulyUpdate = getYesOrNo("Do you want to update the data");
+            if(trulyUpdate){
+                Scanner userIn = new Scanner(System.in);
+                System.out.print("Project ID you want to update : ");
+                String updateKey = userIn.next();
+                updateList(list , updateKey );
+            }
         }
         return found;
     }
@@ -369,7 +434,7 @@ public class Main {
         System.out.print("Month : ");
         month = userIn.nextInt();
         userIn.nextLine();
-        System.out.println("Day : ");
+        System.out.print("Day : ");
         day = userIn.nextInt();
         userIn.nextLine();
         Date tarikh = new Date(year, month, day);

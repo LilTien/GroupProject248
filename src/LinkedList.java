@@ -72,6 +72,8 @@ public class LinkedList
             return null;
 
     }
+    //add data
+
 
     // Return the last element in the linked list
     public Object getLast() throws EmptyListException

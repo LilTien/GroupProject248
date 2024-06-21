@@ -108,7 +108,7 @@ public class Construction {
     public String toString(){
         return "\nProject ID: " + projectID +"\nProject Name: " +  clientName+ "\nProject Category: " +
                 projectCategory + "\nProject Location: " +projectLocation +
-                "\nProject Start Date: " +startDate + "\n Estimated time: " +estimatedTime +
+                "\nProject Start Date: " +startDate + "\nEstimated time: " +estimatedTime +
                 "\nProject End Date: " +endDate + "\nBudget: " +
                 budget + "\nProject Status: " +projectStatus + "\nProgress Status : " + projectStatus;
     }
