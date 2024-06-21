@@ -34,6 +34,7 @@ public class Main {
         System.out.println("3. Remove data ");
         System.out.println("4. Split data ");
         System.out.println("5. Search and update data ");
+        System.out.println("6. Count data based on region ");
         userInInt = userIn.nextInt();
         userIn.nextLine();
 
@@ -54,6 +55,7 @@ public class Main {
                 System.out.println("-----------------------");
                 System.out.println("Remove Data");
                 System.out.println("-----------------------");
+                removeData(constructionList);
                 break;
             case 4:
                 System.out.println("-----------------------");
@@ -76,9 +78,12 @@ public class Main {
                 System.out.print("Enter key word: ");
                 String key = userIn.nextLine();
                 findData(constructionList, searchOption, key, true, update);
-
-
-
+                break;
+            case 6:
+                System.out.println("-----------------------");
+                System.out.println("COUNT DATA BASED ON REGION");
+                System.out.println("-----------------------");
+                countData(constructionList);
                 break;
             default:
                 System.err.println("Wrong input");
@@ -148,6 +153,33 @@ public class Main {
         } catch(Error e){
             System.err.println("File can't be read.");
         }
+    }
+
+    public static void countData (LinkedList list) throws IOException{
+
+        int count = 0, i = 0;
+        Scanner in = new Scanner(System.in);
+
+
+        System.out.println("Based on Location ");
+        System.out.println("Enter the Location you want to find : ");
+        String location = in.nextLine();
+
+        Object obj = list.getFirst();
+        while (obj != null){
+            Construction temp = (Construction) obj;
+            if (temp.getProjectLocation().contains(location)){
+                count++;
+            }
+            obj = list.getNext();
+        }
+
+        System.out.println("--------------------------------");
+        System.out.println("\t" + location + "\t");
+        System.out.println("--------------------------------");
+        System.out.println("\nThe total project in " +location + ":" + count);
+        System.out.println("--------------------------------");
+
     }
     //file to list function
     public static LinkedList fileToList(String fileName) throws IOException{
@@ -246,13 +278,10 @@ public class Main {
         }
         System.out.println(!found ? "\n\nThere is no match data" : "");
         if(update){
-            boolean trulyUpdate = getYesOrNo("Do you want to update the data");
-            if(trulyUpdate){
-                Scanner userIn = new Scanner(System.in);
-                System.out.print("Project ID you want to update : ");
-                String updateKey = userIn.next();
-                updateList(list , updateKey );
-            }
+            Scanner userIn = new Scanner(System.in);
+            System.out.print("Project ID you want to update : ");
+            String updateKey = userIn.next();
+            updateList(list , updateKey );
         }
         return found;
     }
@@ -286,6 +315,43 @@ public class Main {
         }
         if(second){
             writeListtoFile(listBelow, secondFile);
+        }
+    }
+    public static void removeData(LinkedList list) throws IOException{
+        Scanner userIn = new Scanner(System.in);
+        boolean isRemove = false;
+        LinkedList tempLL = new LinkedList();
+        Construction removedData = null;
+        displayList(list);
+
+        System.out.println("Enter the project ID Data you want to remove : ");
+        String nameKey = userIn.nextLine();
+        isRemove = getYesOrNo("Are you sure you want to remove the data?");
+
+        //System.out.println("\nEnter the file you want to write to : ");
+        //String fileName = userIn.nextLine();
+
+        Object obj = list.getFirst();
+        if(isRemove){
+            if(!list.isEmpty()) {
+                obj = list.removeFromFront();
+                while (!list.isEmpty()) {
+                    Construction reListConstruct = (Construction) obj;
+                    if(!reListConstruct.getProjectID().equalsIgnoreCase(nameKey)){
+                        tempLL.insertAtFront(reListConstruct);
+                    }
+                    obj = list.removeFromFront();
+                }
+            }else{
+                System.err.println("The List is empty");
+            }
+
+            while(!tempLL.isEmpty()){
+                obj = tempLL.removeFromFront();
+                list.insertAtFront(obj);
+            }
+            writeListtoFile(list, "constructionData.txt");
+
         }
     }
     public static void updateList(LinkedList list , String projectID) throws IOException{
@@ -387,7 +453,9 @@ public class Main {
             bufferFile.flush();
             fileWrite.close();
             bufferFile.close();
-            System.out.println("Done update ~~ sayonara");
+            System.out.println("Done update ~~ ");
+            System.out.println("\nFile after update:");
+            displayList(list);
         }catch (Error e){
             System.err.println("Cannot update the file!!!");
         }

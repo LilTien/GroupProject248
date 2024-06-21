@@ -106,10 +106,31 @@ public class Construction {
 
     //print method
     public String toString(){
-        return "\nProject ID: " + projectID +"\nProject Name: " +  clientName+ "\nProject Category: " +
-                projectCategory + "\nProject Location: " +projectLocation +
-                "\nProject Start Date: " +startDate + "\nEstimated time: " +estimatedTime +
-                "\nProject End Date: " +endDate + "\nBudget: " +
-                budget + "\nProject Status: " +projectStatus + "\nProgress Status : " + projectStatus;
+        return String.format(
+                "\n---------------------------------------------------" +
+                        "\n| %-18s | %-28s |" +
+                        "\n---------------------------------------------------" +
+                        "\n| Project ID         | %-28s |" +
+                        "\n| Project Name       | %-28s |" +
+                        "\n| Project Category   | %-28s |" +
+                        "\n| Project Location   | %-28s |" +
+                        "\n| Project Start Date | %-20s |" +
+                        "\n| Estimated time     | %-28s |" +
+                        "\n| Project End Date   | %-20s |" +
+                        "\n| Budget             | %-28s |" +
+                        "\n| Project Status     | %-28s |" +
+                        "\n| Progress Status    | %-28s |" +
+                        "\n---------------------------------------------------",
+                "Attribute", "Value",
+                projectID,
+                clientName,
+                projectCategory,
+                projectLocation,
+                startDate,
+                estimatedTime,
+                endDate,
+                budget,
+                projectStatus,
+                projectStatus);
     }
 }
