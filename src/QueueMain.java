@@ -376,11 +376,6 @@ public class QueueMain {
             return false;
         }
     }
-
-
-    //public static String autoGenerateID(){
-
-    //}
     public static Date getDates(){
         Scanner userIn = new Scanner(System.in);
         int year, month , day;

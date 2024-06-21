@@ -13,5 +13,3 @@ P012;R;Mont Kiara, Kuala Lumpur;2024-8-25;120;2025-0-23;200000.0;approve;delay;Y
 P014;I;Taiping, Perak;2024-10-15;180;2025-4-13;800000.0;approve;in progress;Dae hee
 P016;C;Miri, Sarawak;2024-11-5;180;2025-5-4;600000.0;approve;in progress;Kei
 P017;I;Cheras, Kuala Lumpur;2024-11-20;240;2025-7-19;1200000.0;pending;NA;Karuizawa
-P018;R;Sandakan, Sabah;2025-0-10;120;2025-3-9;300000.0;approve;in progress;Arisu
-P019;C;Kangar, Perlis;2025-0-25;90;2025-3-25;100000.0;approve;completed;Sakayanagi

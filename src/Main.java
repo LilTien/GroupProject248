@@ -9,85 +9,87 @@ public class Main {
     private static int currentNumber =0;
     public static void main(String[] args) throws IOException {
 
-        Scanner userIn = new Scanner(System.in);
-        boolean userInput = false;
-        int userInInt  = 0 ;
-        LinkedList constructionList = new LinkedList();
-        while (!userInput){
-            System.out.print("File name : ");
-            String fileName = userIn.next();
+        boolean cont = true;
+        while(cont){
+            Scanner userIn = new Scanner(System.in);
+            boolean userInput = false;
+            int userInInt  = 0 ;
+            LinkedList constructionList = new LinkedList();
+            while (!userInput){
+                System.out.print("File name : ");
+                String fileName = userIn.next();
 
-            constructionList =  fileToList(fileName);
-            if (constructionList == null){
-                System.err.println("Error to open the file");
-            }else{
-                userInput = true;
+                constructionList =  fileToList(fileName);
+                if (constructionList == null){
+                    System.err.println("Error to open the file");
+                }else{
+                    userInput = true;
+                }
             }
+            System.out.println("Please Choose: ");
+            System.out.println("1. View data ");
+            System.out.println("2. Add data ");
+            System.out.println("3. Remove data ");
+            System.out.println("4. Split data ");
+            System.out.println("5. Search and update data ");
+            System.out.println("6. Count data based on region ");
+            userInInt = userIn.nextInt();
+            userIn.nextLine();
+
+            switch (userInInt){
+                case 1:
+                    System.out.println("-----------------------");
+                    System.out.println("View data");
+                    System.out.println("-----------------------");
+                    displayList(constructionList);
+                    break;
+                case 2:
+                    System.out.println("-----------------------");
+                    System.out.println("Add Data");
+                    System.out.println("-----------------------");
+                    addData(constructionList);
+                    break;
+                case 3:
+                    System.out.println("-----------------------");
+                    System.out.println("Remove Data");
+                    System.out.println("-----------------------");
+                    removeData(constructionList);
+                    break;
+                case 4:
+                    System.out.println("-----------------------");
+                    System.out.println("Split data based on budget");
+                    System.out.println("-----------------------");
+                    splitData(constructionList);
+                    break;
+                case 5:
+                    System.out.println("-----------------------");
+                    System.out.println("SEARCH AND UPDATE DATA");
+                    System.out.println("-----------------------");
+                    boolean update = getYesOrNo("Do you want to search and update too: ");
+                    System.out.println("Do you want to search by :");
+                    System.out.println("1. Project ID");
+                    System.out.println("2. Client Name");
+                    System.out.println("3. Project Location");
+                    System.out.print("Your option: ");
+                    int searchOption = userIn.nextInt();
+                    userIn.nextLine();
+                    System.out.print("Enter key word: ");
+                    String key = userIn.nextLine();
+                    findData(constructionList, searchOption, key, true, update);
+                    break;
+                case 6:
+                    System.out.println("-----------------------");
+                    System.out.println("COUNT DATA BASED ON REGION");
+                    System.out.println("-----------------------");
+                    countData(constructionList);
+                    break;
+                default:
+                    System.err.println("Wrong input");
+            }
+            cont = getYesOrNo("Do you want to continue");
         }
 
 
-
-
-        System.out.println("Please Choose: ");
-        System.out.println("1. View data ");
-        System.out.println("2. Add data ");
-        System.out.println("3. Remove data ");
-        System.out.println("4. Split data ");
-        System.out.println("5. Search and update data ");
-        System.out.println("6. Count data based on region ");
-        userInInt = userIn.nextInt();
-        userIn.nextLine();
-
-        switch (userInInt){
-            case 1:
-                System.out.println("-----------------------");
-                System.out.println("View data");
-                System.out.println("-----------------------");
-                displayList(constructionList);
-                break;
-            case 2:
-                System.out.println("-----------------------");
-                System.out.println("Add Data");
-                System.out.println("-----------------------");
-                addData(constructionList);
-                break;
-            case 3:
-                System.out.println("-----------------------");
-                System.out.println("Remove Data");
-                System.out.println("-----------------------");
-                removeData(constructionList);
-                break;
-            case 4:
-                System.out.println("-----------------------");
-                System.out.println("Split data based on budget");
-                System.out.println("-----------------------");
-                splitData(constructionList);
-                break;
-            case 5:
-                System.out.println("-----------------------");
-                System.out.println("SEARCH AND UPDATE DATA");
-                System.out.println("-----------------------");
-                boolean update = getYesOrNo("Do you want to search and update too: ");
-                System.out.println("Do you want to search by :");
-                System.out.println("1. Project ID");
-                System.out.println("2. Client Name");
-                System.out.println("3. Project Location");
-                System.out.print("Your option: ");
-                int searchOption = userIn.nextInt();
-                userIn.nextLine();
-                System.out.print("Enter key word: ");
-                String key = userIn.nextLine();
-                findData(constructionList, searchOption, key, true, update);
-                break;
-            case 6:
-                System.out.println("-----------------------");
-                System.out.println("COUNT DATA BASED ON REGION");
-                System.out.println("-----------------------");
-                countData(constructionList);
-                break;
-            default:
-                System.err.println("Wrong input");
-        }
 
     }
 
@@ -327,9 +329,6 @@ public class Main {
         System.out.println("Enter the project ID Data you want to remove : ");
         String nameKey = userIn.nextLine();
         isRemove = getYesOrNo("Are you sure you want to remove the data?");
-
-        //System.out.println("\nEnter the file you want to write to : ");
-        //String fileName = userIn.nextLine();
 
         Object obj = list.getFirst();
         if(isRemove){
