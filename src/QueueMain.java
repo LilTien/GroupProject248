@@ -1,7 +1,9 @@
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -46,11 +48,13 @@ public class QueueMain {
                 System.out.println("-----------------------");
                 System.out.println("Add Data");
                 System.out.println("-----------------------");
+                addData(constructionQ);
                 break;
             case 3:
                 System.out.println("-----------------------");
                 System.out.println("Remove Data");
                 System.out.println("-----------------------");
+                removeData(constructionQ);
                 break;
             case 4:
                 System.out.println("-----------------------");
@@ -74,10 +78,45 @@ public class QueueMain {
                 String key = userIn.nextLine();
                 findData(constructionQ, searchOption, key, true);
                 break;
+            case 6:
+                System.out.println("-----------------------");
+                System.out.println("\tCount Data\t");
+                System.out.println("-----------------------");
+                countData(constructionQ);
+                break;
             default:
                 System.err.println("Wrong input");
         }
 
+    }
+
+    public static void countData(Queue dataQ){
+        int count = 0, i = 0;
+        Scanner in = new Scanner(System.in);
+        
+        System.out.println("Based on Location ");
+        System.out.println("Enter the Location you want to find : ");
+        String location = in.nextLine();
+
+        Object obj = dataQ.dequeue();
+        
+        Queue tempQ = new Queue();
+        while (obj != null){
+            Construction temp = (Construction) obj;
+            if (temp.getProjectLocation().contains(location)){
+                count++;
+            }
+            obj = dataQ.dequeue();
+            tempQ.enqueue(temp);
+        }
+        
+        tempToOriginalQueue(tempQ, dataQ);
+
+        System.out.println("--------------------------------");
+        System.out.println("\t" + location + "\t");
+        System.out.println("--------------------------------");
+        System.out.println("\nThe total project in " +location + ":" + count);
+        System.out.println("--------------------------------");
     }
 
     //file to list function
@@ -189,6 +228,112 @@ public class QueueMain {
             updateQueue(q , updateKey );
         }
         return found;
+    }
+
+    public static void addData(Queue q) throws IOException {
+        try {
+            FileWriter fileWrite = new FileWriter("constructionData.txt", true);
+            BufferedWriter bufferWrite = new BufferedWriter(fileWrite);
+
+            Scanner userInput = new Scanner(System.in);
+
+            System.out.println("Project ID:");
+            String projectID = userInput.nextLine();
+            System.out.println("\nClient Name: ");
+            String clientName = userInput.nextLine();
+            System.out.println("\nProject Category: ");
+            char projectCategory = userInput.next().charAt(0);
+            userInput.nextLine();
+            System.out.println("\nProject Location: ");
+            String projectLocation = userInput.nextLine();
+            System.out.println("\nStart Date: ");
+            Date startDate = getDates();
+            System.out.println("\nEnd Date: ");
+            Date endDate = getDates();
+            System.out.println("\nBudget: ");
+            double budget = userInput.nextDouble();
+            userInput.nextLine();
+            System.out.println("\nProject Status: ");
+            String projectStatus = userInput.nextLine();
+            System.out.println("\nProgress Status: ");
+            String progressStatus = userInput.nextLine();
+
+            int estimatedTime = estimatedDate(startDate, endDate);
+
+            Construction const1 = new Construction(projectID, projectCategory, projectLocation, startDate, estimatedTime, endDate, budget, projectStatus, progressStatus, clientName);
+
+            System.out.println("\nData that you entered is : ");
+            System.out.println("=============================");
+            System.out.println("Project ID : " + projectID);
+            System.out.println("Project Category : " + projectCategory);
+            System.out.println("Project Location : " + projectLocation);
+            System.out.println("Start Date : " + startDate);
+            System.out.println("End Date : " + endDate);
+            System.out.println("Budget : " + budget);
+            System.out.println("Project Status : " + projectStatus);
+            System.out.println("Progress Status : " + progressStatus);
+            System.out.println("Client Name : " + clientName);
+
+            boolean isAdd = getYesOrNo("Are you sure you want to add?");
+
+            boolean alreadyHave = findData(q, 1, projectID, false);
+            if (alreadyHave) {
+                System.err.println("File already have");
+                if (isAdd && !alreadyHave) {
+                    q.enqueue(const1);
+                    writeQueuetoFile(q, "constructionData.txt");
+                    System.out.println("Data has successfully been added into the file.");
+
+                } else {
+                    System.err.println("Error to put the file!!! ");
+                }
+                bufferWrite.close();
+                fileWrite.close();
+            }
+        } catch (Error e) {
+            System.err.println("File can't be read.");
+        }
+    }
+
+    public static void removeData(Queue q) throws IOException {
+        Scanner userIn = new Scanner(System.in);
+        boolean isRemove = false;
+        Queue tempQ = new Queue();
+        Construction removeData = null;
+
+        Object obj = q.dequeue();
+        while (obj != null){
+            Construction tempConst = (Construction) obj;
+            System.out.println(tempConst);
+            obj = q.dequeue();
+        }
+
+        System.out.println("Enter the Data you want to remove : ");
+        String nameKey = userIn.nextLine();
+        isRemove = getYesOrNo("Are you sure you want to remove the data?");
+
+        System.out.println("\nEnter the file you want to write to : ");
+        String fileName = userIn.nextLine();
+        if(isRemove){
+            if(!q.isEmpty()) {
+                obj = q.dequeue();
+                while (!q.isEmpty()) {
+                    Construction reListConstruct = (Construction) obj;
+                    if(!reListConstruct.getProjectID().equalsIgnoreCase(nameKey)){
+                        tempQ.enqueue(reListConstruct);
+                    }
+                    obj = q.dequeue();
+                }
+            }else{
+                System.out.println("The List is empty");
+            }
+
+            while(!tempQ.isEmpty()){
+                obj = tempQ.dequeue();
+                q.enqueue(obj);
+            }
+            writeQueuetoFile(q, fileName);
+        }
     }
     public static void splitData(Queue q)throws IOException{
         Queue belowQ = new Queue();
@@ -391,7 +536,6 @@ public class QueueMain {
         userIn.nextLine();
         System.out.println("Day : ");
         day = userIn.nextInt();
-        userIn.nextLine();
         Date tarikh = new Date(year, month, day);
         return tarikh;
     }
