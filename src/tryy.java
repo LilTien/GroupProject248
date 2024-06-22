@@ -5,16 +5,15 @@ public class tryy {
     public static void main(String[] args) {
 
 
-        LinkedList ajim = new LinkedList();
-
-        /*ajim.insertAtBack("adam");
-        ajim.insertAtBack("bajunid");
-        ajim.insertAtBack("pakican");
-        ajim.insertAtBack("pakistan");
-        ajim.insertAtBack("adamsan");*/
+        System.out.println(interpret("G()(al)"));
 
 
-
-
+    }
+    public static String interpret(String command) {
+        String ans = command.replace("()", "o");
+        char first , second = ')';
+        ans = ans.replace(Character.toString('('), "");
+        ans = ans.replace(Character.toString(')'), "");
+        return ans;
     }
 }

@@ -7,8 +7,8 @@ import java.util.Scanner;
 
 public class QueueMain {
 
-    private static int currentNumber = 0;
     public static void main(String[] args) throws IOException {
+        boolean cont = true;
         Scanner userIn = new Scanner(System.in);
         boolean userInput = false;
         int userInInt  = 0 ;
@@ -24,67 +24,80 @@ public class QueueMain {
             }
         }
 
+        while(cont){
+            System.out.println("Please Choose: ");
+            System.out.println("1. VIEW PROJECT ");
+            System.out.println("2. ADD PROJECT ");
+            System.out.println("3. REMOVE PROJECT ");
+            System.out.println("4. SPLIT PROJECT ");
+            System.out.println("5. SEARCH AND UPDATE PROJECT ");
+            System.out.println("6. COUNT PROJECT BASED ON REGION ");
+            System.out.println("7. Calculate total budget on specific region");
+            userInInt = userIn.nextInt();
+            userIn.nextLine();
 
-        System.out.println("Please Choose: ");
-        System.out.println("1. VIEW PROJECT ");
-        System.out.println("2. ADD PROJECT ");
-        System.out.println("3. REMOVE PROJECT ");
-        System.out.println("4. SPLIT PROJECT ");
-        System.out.println("5. SEARCH AND UPDATE PROJECT ");
-        System.out.println("6. COUNT PROJECT BASED ON REGION ");
-        userInInt = userIn.nextInt();
-        userIn.nextLine();
-
-        switch (userInInt){
-            case 1:
-                System.out.println("-----------------------");
-                System.out.println("VIEW PROJECT");
-                System.out.println("-----------------------");
-                displayQueue(constructionQ);
-                break;
-            case 2:
-                System.out.println("-----------------------");
-                System.out.println("ADD PROJECT");
-                System.out.println("-----------------------");
-                addData(constructionQ);
-                break;
-            case 3:
-                System.out.println("-----------------------");
-                System.out.println("REMOVE PROJECT");
-                System.out.println("-----------------------");
-                removeData(constructionQ);
-                break;
-            case 4:
-                System.out.println("-----------------------");
-                System.out.println("SPLIT PROJECT BASED ON BUDGET");
-                System.out.println("-----------------------");
-                splitData(constructionQ);
-                break;
-            case 5:
-                System.out.println("-----------------------");
-                System.out.println("SEARCH AND UPDATE PROJECT");
-                System.out.println("-----------------------");
-                System.out.println("Do you want to search and update of search only: ");
-                System.out.println("Do you want to search by :");
-                System.out.println("1. Project ID");
-                System.out.println("2. Client Name");
-                System.out.println("3. Project Location");
-                System.out.print("Your option: ");
-                int searchOption = userIn.nextInt();
-                userIn.nextLine();
-                System.out.print("Enter key word: ");
-                String key = userIn.nextLine();
-                findData(constructionQ, searchOption, key, true);
-                break;
-            case 6:
-                System.out.println("-----------------------");
-                System.out.println("COUNT PROJECT BASED ON REGION");
-                System.out.println("-----------------------");
-                countData(constructionQ);
-                break;
-            default:
-                System.err.println("Wrong input");
+            switch (userInInt){
+                case 1:
+                    System.out.println("-----------------------");
+                    System.out.println("VIEW PROJECT");
+                    System.out.println("-----------------------");
+                    displayQueue(constructionQ);
+                    break;
+                case 2:
+                    System.out.println("-----------------------");
+                    System.out.println("ADD PROJECT");
+                    System.out.println("-----------------------");
+                    addData(constructionQ);
+                    break;
+                case 3:
+                    System.out.println("-----------------------");
+                    System.out.println("REMOVE PROJECT");
+                    System.out.println("-----------------------");
+                    removeData(constructionQ);
+                    break;
+                case 4:
+                    System.out.println("-----------------------");
+                    System.out.println("SPLIT PROJECT BASED ON BUDGET");
+                    System.out.println("-----------------------");
+                    splitData(constructionQ);
+                    break;
+                case 5:
+                    System.out.println("-----------------------");
+                    System.out.println("SEARCH AND UPDATE PROJECT");
+                    System.out.println("-----------------------");
+                    System.out.println("Do you want to search and update of search only: ");
+                    System.out.println("Do you want to search by :");
+                    System.out.println("1. Project ID");
+                    System.out.println("2. Client Name");
+                    System.out.println("3. Project Location");
+                    System.out.print("Your option: ");
+                    int searchOption = userIn.nextInt();
+                    userIn.nextLine();
+                    System.out.print("Enter key word: ");
+                    String key = userIn.nextLine();
+                    findData(constructionQ, searchOption, key, true);
+                    break;
+                case 6:
+                    System.out.println("-----------------------");
+                    System.out.println("COUNT PROJECT BASED ON REGION");
+                    System.out.println("-----------------------");
+                    countData(constructionQ);
+                    break;
+                case 7:
+                    System.out.println("-----------------------");
+                    System.out.println("CALCULATE TOTAL BUDGET BASED ON REGION");
+                    System.out.println("-----------------------");
+                    System.out.print("\nEnter Region: ");
+                    String region = userIn.nextLine();
+                    double total = totalBudget(constructionQ, region);
+                    System.out.println("Total budget on " +  region + " : " + total);
+                    break;
+                default:
+                    System.err.println("Wrong input");
+            }
+            cont = getYesOrNo("Do you want to continue");
         }
+
 
     }
 
@@ -198,6 +211,19 @@ public class QueueMain {
             }
         }
         return found;
+    }
+    public static double totalBudget(Queue q, String region){
+        Queue tempQ = new Queue();
+        double totalBudget =0;
+        while(!q.isEmpty()){
+            Construction obj = q.dequeue();
+            if(obj.getProjectLocation().toLowerCase().contains(region.toLowerCase())){
+                totalBudget += obj.getBudget();
+            }
+            tempQ.enqueue(obj);
+        }
+        tempToOriginalQueue(tempQ, q);
+        return totalBudget;
     }
     public static void removeData(Queue q) throws IOException {
         Scanner userIn = new Scanner(System.in);

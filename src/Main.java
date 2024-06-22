@@ -10,28 +10,22 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         boolean cont = true;
-        while(cont){
-            Scanner userIn = new Scanner(System.in);
-            boolean userInput = false;
-            int userInInt  = 0 ;
-            LinkedList constructionList = new LinkedList();
-            while (!userInput){
-                System.out.print("File name : ");
-                String fileName = userIn.next();
+        Scanner userIn = new Scanner(System.in);
+        boolean userInput = false;
+        int userInInt  = 0 ;
+        LinkedList constructionList = new LinkedList();
+        while (!userInput){
+            System.out.print("File name : ");
+            String fileName = userIn.next();
 
-                constructionList =  fileToList(fileName);
-                if (constructionList == null){
-                    System.err.println("Error to open the file");
-                }else{
-                    userInput = true;
-                }
+            constructionList =  fileToList(fileName);
+            if (constructionList == null){
+                System.err.println("Error to open the file");
+            }else{
+                userInput = true;
             }
-            userIn.nextLine();
-            /*displayList(constructionList);
-            System.out.println("Enter id: ");
-            String proID = userIn.nextLine();
-            constructionList.removeNode(proID);
-            displayList(constructionList);*/
+        }
+        while(cont){
 
             System.out.println("Please Choose: ");
             System.out.println("1. View data ");
@@ -40,6 +34,7 @@ public class Main {
             System.out.println("4. Split data ");
             System.out.println("5. Search and update data ");
             System.out.println("6. Count data based on region ");
+            System.out.println("7. Calculate total budget on specific region");
             userInInt = userIn.nextInt();
             userIn.nextLine();
 
@@ -89,6 +84,15 @@ public class Main {
                     System.out.println("COUNT DATA BASED ON REGION");
                     System.out.println("-----------------------");
                     countData(constructionList);
+                    break;
+                case 7:
+                    System.out.println("-----------------------");
+                    System.out.println("CALCULATE TOTAL BUDGET BASED ON REGION");
+                    System.out.println("-----------------------");
+                    System.out.print("\nEnter Region: ");
+                    String region = userIn.nextLine();
+                    double total = totalBudget(constructionList, region);
+                    System.out.println("Total budget on " +  region + " : " + total);
                     break;
                 default:
                     System.err.println("Wrong input");
@@ -162,6 +166,18 @@ public class Main {
         } catch(Error e){
             System.err.println("File can't be read.");
         }
+    }
+    //display total budget on specific region
+    public static double totalBudget(LinkedList list, String region){
+        Construction obj = list.getFirst();
+        double totalBudget =0;
+        while(obj != null){
+            if(obj.getProjectLocation().toLowerCase().contains(region.toLowerCase())){
+                totalBudget += obj.getBudget();
+            }
+            obj = list.getNext();
+        }
+        return totalBudget;
     }
 
     public static void countData (LinkedList list) throws IOException{
@@ -424,7 +440,6 @@ public class Main {
         }
 
     }
-
     public static void writeListtoFile(LinkedList list, String fileName) throws  IOException{
         FileWriter fileWrite = new FileWriter(fileName);
         BufferedWriter bufferFile = new BufferedWriter(fileWrite);
@@ -457,7 +472,6 @@ public class Main {
 
         }
     }
-
     public static String dateToString(Date d){
         String year = String.valueOf(d.getYear() + 1900);
         String month = String.valueOf(d.getMonth());
@@ -466,12 +480,10 @@ public class Main {
         stringDate += year+"-"+month+"-"+date ;
         return stringDate;
     }
-
     public static int estimatedDate(Date start, Date end){
         int year = end.getYear() - start.getYear() ;
         return year;
     }
-
     public static boolean getYesOrNo (String message){
         Scanner userIn = new Scanner(System.in);
         System.out.print(message + " (y/n) : ");
