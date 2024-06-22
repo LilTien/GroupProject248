@@ -16,8 +16,7 @@ public class QueueMain {
         while (!userInput){
             System.out.println("File name : ");
             String fileName = userIn.next();
-
-            constructionQ =  fileToList(fileName);
+            constructionQ =  fileToQueue(fileName);
             if (constructionQ == null){
                 System.err.println("Error to open the file");
             }else{
@@ -27,40 +26,43 @@ public class QueueMain {
 
 
         System.out.println("Please Choose: ");
-        System.out.println("1. View data ");
-        System.out.println("2. Add data ");
-        System.out.println("3. Remove data ");
-        System.out.println("4. Split data ");
-        System.out.println("5. Search and update data ");
+        System.out.println("1. VIEW PROJECT ");
+        System.out.println("2. ADD PROJECT ");
+        System.out.println("3. REMOVE PROJECT ");
+        System.out.println("4. SPLIT PROJECT ");
+        System.out.println("5. SEARCH AND UPDATE PROJECT ");
+        System.out.println("6. COUNT PROJECT BASED ON REGION ");
         userInInt = userIn.nextInt();
         userIn.nextLine();
 
         switch (userInInt){
             case 1:
                 System.out.println("-----------------------");
-                System.out.println("View data");
+                System.out.println("VIEW PROJECT");
                 System.out.println("-----------------------");
                 displayQueue(constructionQ);
                 break;
             case 2:
                 System.out.println("-----------------------");
-                System.out.println("Add Data");
+                System.out.println("ADD PROJECT");
                 System.out.println("-----------------------");
+                addData(constructionQ);
                 break;
             case 3:
                 System.out.println("-----------------------");
-                System.out.println("Remove Data");
+                System.out.println("REMOVE PROJECT");
                 System.out.println("-----------------------");
+                removeData(constructionQ);
                 break;
             case 4:
                 System.out.println("-----------------------");
-                System.out.println("Split data based on budget");
+                System.out.println("SPLIT PROJECT BASED ON BUDGET");
                 System.out.println("-----------------------");
                 splitData(constructionQ);
                 break;
             case 5:
                 System.out.println("-----------------------");
-                System.out.println("SEARCH AND UPDATE DATA");
+                System.out.println("SEARCH AND UPDATE PROJECT");
                 System.out.println("-----------------------");
                 System.out.println("Do you want to search and update of search only: ");
                 System.out.println("Do you want to search by :");
@@ -74,6 +76,12 @@ public class QueueMain {
                 String key = userIn.nextLine();
                 findData(constructionQ, searchOption, key, true);
                 break;
+            case 6:
+                System.out.println("-----------------------");
+                System.out.println("COUNT PROJECT BASED ON REGION");
+                System.out.println("-----------------------");
+                countData(constructionQ);
+                break;
             default:
                 System.err.println("Wrong input");
         }
@@ -81,7 +89,7 @@ public class QueueMain {
     }
 
     //file to list function
-    public static Queue fileToList(String fileName) throws IOException{
+    public static Queue fileToQueue(String fileName) throws IOException{
         File constructionFile = new File(fileName) ;
         Queue constructionQ = new Queue();
         try{
@@ -118,7 +126,6 @@ public class QueueMain {
                 Construction tempCons = new Construction(projectId, proCat, proLoc, startDate,
                         estimatedDate, endDate, budget, projectStatus,
                         projectProgress, clientName);
-                //System.out.println("temp cons" + tempCons);
                 constructionQ.enqueue(tempCons);
                 //System.out.println((Construction)constructionList.getFirst());
             }
@@ -130,39 +137,41 @@ public class QueueMain {
     }
     //find data function
     public static boolean findData (Queue q,int field , String key , boolean display) throws IOException{
-        Object obj = q.dequeue();
+
         boolean found = false;
         String [] stringField = {"Project ID", "Client Name", "Project Location"};
-        System.out.println("\n\nAll "+stringField[field-1] +" : " + key);
+
         Queue updateQ = new Queue();
         Queue tempQ = new Queue();
+
         while (!q.isEmpty()){
-            Construction temp = (Construction) obj;
+            Construction obj = q.dequeue();
+            tempQ.enqueue(obj);
             switch(field){
                 case 1:
-                    if(temp.getProjectID().contains(key)){
+                    if(obj.getProjectID().contains(key.toUpperCase())){
                         found = true;
                         if (display){
-                            System.out.println(temp);
+                            System.out.println(obj);
                         }
                     }
                     break;
                 case 2:
-                    String clientName = temp.getClientName();
+                    String clientName = obj.getClientName();
                     clientName= clientName.toLowerCase();
                     if(clientName.contains(key.toLowerCase())){
                         found = true;
                         if (display){
-                            System.out.println(temp);
+                            System.out.println(obj);
                         }
                     }
                     break;
                 case 3:
-                    String location = temp.getProjectLocation().toLowerCase();
+                    String location = obj.getProjectLocation().toLowerCase();
                     if(location.contains(key.toLowerCase())){
                         found = true;
                         if (display ){
-                            System.out.println(temp);
+                            System.out.println(obj);
                         }
                     }
                     break;
@@ -170,25 +179,53 @@ public class QueueMain {
                     System.err.println("Wrong input !!!");
                     return false;
             }
-            tempQ.enqueue(temp);
+            //System.out.println(count++);
             if(found){
-                updateQ.enqueue(temp);
+                updateQ.enqueue(obj);
             }
-            obj = q.dequeue();
         }
         //put back to data to original queue
-        while(!tempQ.isEmpty()){
-            q.enqueue(tempQ.dequeue());
-        }
+        tempToOriginalQueue(tempQ, q);
         System.out.println(!found ? "\n\nThere is no match data" : "");
-        boolean update = getYesOrNo("Do you want to update the data");
-        Scanner userIn = new Scanner(System.in);
-        if(update){
-            System.out.print("Project ID you want to update : ");
-            String updateKey = userIn.next();
-            updateQueue(q , updateKey );
+        if(display){
+            System.out.println("\n\nAll "+stringField[field-1] +" : " + key);
+            boolean update = getYesOrNo("Do you want to update the data");
+            Scanner userIn = new Scanner(System.in);
+            if(update){
+                System.out.print("Project ID you want to update : ");
+                String updateKey = userIn.next();
+                updateQueue(q , updateKey );
+            }
         }
         return found;
+    }
+    public static void removeData(Queue q) throws IOException {
+        Scanner userIn = new Scanner(System.in);
+        boolean isRemove = false;
+        Queue tempQ = new Queue();
+        Construction removeData = null;
+
+        displayQueue(q);
+
+        System.out.println("Enter the project ID you want to remove : ");
+        String nameKey = userIn.nextLine();
+        isRemove = getYesOrNo("Are you sure you want to remove the data?");
+
+        if(isRemove){
+            if(!q.isEmpty()) {
+                while (!q.isEmpty()) {
+                    Construction obj = q.dequeue();
+                    if(!obj.getProjectID().equalsIgnoreCase(nameKey)){
+                        tempQ.enqueue(obj);
+                    }
+                }
+            }else{
+                System.out.println("The List is empty");
+            }
+
+            tempToOriginalQueue(tempQ, q);
+            writeQueuetoFile(q, "constructionData.txt");
+        }
     }
     public static void splitData(Queue q)throws IOException{
         Queue belowQ = new Queue();
@@ -201,21 +238,19 @@ public class QueueMain {
         System.out.print("Name for file RM" + budget + " below: ");
         String secondFile = userIn.next();
 
-        Object obj = q.dequeue();
         Queue tempQ = new Queue();
         boolean first = false, second = false;
 
         while(!q.isEmpty()){
-            Construction tempConst = (Construction) obj;
-            if(tempConst.getBudget() >= budget){
-                aboveQ.enqueue(tempConst);
+            Construction obj = q.dequeue();
+            if(obj.getBudget() >= budget){
+                aboveQ.enqueue(obj);
                 first = true;
             }else{
-                belowQ.enqueue(tempConst);
+                belowQ.enqueue(obj);
                 second = true;
             }
-            obj = q.dequeue();
-            tempQ.enqueue(tempConst);
+            tempQ.enqueue(obj);
         }
         if(first){
             writeQueuetoFile(aboveQ, firstFile);
@@ -225,23 +260,107 @@ public class QueueMain {
         }
         tempToOriginalQueue(tempQ, q);
     }
+    public static void countData (Queue q) throws IOException{
 
+        int count = 0;
+        Scanner in = new Scanner(System.in);
+
+        System.out.println("Based on Location ");
+        System.out.println("Enter the Location you want to find : ");
+        String location = in.nextLine();
+        while (!q.isEmpty()){
+            Construction obj = q.dequeue();
+            if (obj.getProjectLocation().toLowerCase().contains(location.toLowerCase())){
+                count++;
+            }
+        }
+
+        System.out.println("--------------------------------");
+        System.out.println("\t" + location + "\t");
+        System.out.println("--------------------------------");
+        System.out.println("\nThe total project in " +location + ":" + count);
+        System.out.println("--------------------------------");
+
+    }
+    public static void addData(Queue q) throws IOException {
+        try {
+
+            Scanner userInput = new Scanner(System.in);
+
+            System.out.println("Project ID:");
+            String projectID = userInput.nextLine();
+            System.out.println("\nClient Name: ");
+            String clientName = userInput.nextLine();
+            System.out.println("\nProject Category: ");
+            char projectCategory = userInput.next().charAt(0);
+            userInput.nextLine();
+            System.out.println("\nProject Location: ");
+            String projectLocation = userInput.nextLine();
+            System.out.println("\nStart Date: ");
+            Date startDate = getDates();
+            System.out.println("\nEnd Date: ");
+            Date endDate = getDates();
+            System.out.println("\nBudget: ");
+            double budget = userInput.nextDouble();
+            userInput.nextLine();
+            System.out.println("\nProject Status: ");
+            String projectStatus = userInput.nextLine();
+            System.out.println("\nProgress Status: ");
+            String progressStatus = userInput.nextLine();
+
+            int estimatedTime = estimatedDate(startDate, endDate);
+
+            Construction const1 = new Construction(projectID, projectCategory, projectLocation, startDate, estimatedTime, endDate, budget, projectStatus.toUpperCase(), progressStatus.toUpperCase(), clientName);
+
+            System.out.println("\nData that you entered is : ");
+            System.out.println("=============================");
+            System.out.println("Project ID : " + projectID);
+            System.out.println("Project Category : " + projectCategory);
+            System.out.println("Project Location : " + projectLocation);
+            System.out.println("Start Date : " + startDate);
+            System.out.println("End Date : " + endDate);
+            System.out.println("Budget : " + budget);
+            System.out.println("Project Status : " + projectStatus);
+            System.out.println("Progress Status : " + progressStatus);
+            System.out.println("Client Name : " + clientName);
+
+            boolean isAdd = getYesOrNo("Are you sure you want to add?");
+
+            boolean alreadyHave = findData(q, 1, projectID, false);
+            if (!alreadyHave) {
+                if (isAdd ) {
+                    q.enqueue(const1);
+                    writeQueuetoFile(q, "constructionData.txt");
+                    System.out.println("Data has successfully been added into the file.");
+
+                } else {
+                    System.err.println("Error to put the file!!! ");
+                }
+            }else {
+                System.out.println("Data already have!!!");
+            }
+        } catch (Error e) {
+            System.err.println("File can't be read.");
+        }
+    }
     public static void tempToOriginalQueue(Queue temp, Queue ori){
         while (!temp.isEmpty()){
-            ori.enqueue(temp.dequeue());
+            Construction tempConst = temp.dequeue();
+            ori.enqueue(tempConst);
         }
     }
     public static void updateQueue(Queue q , String projectID) throws IOException{
         //P001;C;Bukit Bintang, Kuala Lumpur;2024-05-15;90;2024-08-13;150000;approve;completed;Abdul
         boolean find = false;
         try {
-            Object obj = q.dequeue();
+
             Queue tempQ = new Queue();
             while(!q.isEmpty()){
-                Construction temp = (Construction) obj;
-                if(temp.getProjectID().equalsIgnoreCase(projectID)){
+                Construction obj = q.dequeue();
+                //System.out.println(obj);
+                if(obj.getProjectID().equalsIgnoreCase(projectID)){
                     try {
-                        System.out.println("\nData you want to update:\n" + temp);
+                        System.out.println("\nData you want to update:\n" + obj);
                         boolean proCategory, proLoc, starDate , endDate, budget, proStatus, progStatus, clientName;
                         proCategory = getYesOrNo("Do you want to update the Project Category");
                         proLoc =  getYesOrNo("Do you want to update the ProjectLocation");
@@ -256,51 +375,50 @@ public class QueueMain {
                         if(proCategory){
                             System.out.print("New Category : ");
                             char category = userIn.next().charAt(0);
-                            temp.setProjectCategory(category);
+                            obj.setProjectCategory(category);
                         }
                         if(proLoc){
                             System.out.print("New Project Location : ");
                             String location = userIn.nextLine();
-                            temp.setProjectLocation(location);
+                            obj.setProjectLocation(location);
                         }
                         Date newDate = new Date();
                         if(starDate){
                             System.out.println("New start date : ");
                             newDate = getDates();
-                            temp.setStartDate(newDate);
+                            obj.setStartDate(newDate);
                             System.out.println("New End Date: ");
                             newDate = getDates();
-                            temp.setEndDate(newDate);
+                            obj.setEndDate(newDate);
                         }
-                        temp.setEstimatedTime(estimatedDate(temp.getStartDate(), temp.getEndDate()));
+                        obj.setEstimatedTime(estimatedDate(obj.getStartDate(), obj.getEndDate()));
                         if (budget){
                             System.out.print("New Budget: ");
                             double newBudget = userIn.nextDouble();
                             userIn.nextLine();
-                            temp.setBudget(newBudget);
+                            obj.setBudget(newBudget);
                         }
                         if(progStatus){
                             System.out.print("New progress status: ");
                             String newProg = userIn.next();
-                            temp.setProgressStatus(newProg);
+                            obj.setProgressStatus(newProg);
                         }
                         if(proStatus){
                             System.out.print("New project status : ");
                             String newProStat = userIn.next();
-                            temp.setProjectStatus(newProStat);
+                            obj.setProjectStatus(newProStat);
                         }
                         if(clientName){
                             System.out.print("New client name: ");
                             String newClient = userIn.nextLine();
-                            temp.setClient(newClient);
+                            obj.setClient(newClient);
                         }
                         find = true;
                     }catch (Error e){
                         System.err.println(e);
                     }
                 }
-                obj = q.dequeue();
-                tempQ.enqueue(temp);
+                tempQ.enqueue(obj);
             }
             tempToOriginalQueue(tempQ, q);
 
@@ -314,44 +432,38 @@ public class QueueMain {
         }
 
     }
-
     public static void writeQueuetoFile(Queue q, String fileName) throws  IOException{
         FileWriter fileWrite = new FileWriter(fileName);
         BufferedWriter bufferFile = new BufferedWriter(fileWrite);
         try{
-            Object obj = q.dequeue();
             Queue tempQ = new Queue();
             while(!q.isEmpty()){
-                Construction tempConst = (Construction) obj;
-                String concat = tempConst.getProjectID()+ ";" + tempConst.getProjectCategory()+";"+ tempConst.getProjectLocation()+";"+
-                        dateToString(tempConst.getStartDate()) + ";" + tempConst.getEstimatedTime() + ";" + dateToString(tempConst.getEndDate())+";"+
-                        tempConst.getBudget() + ";" + tempConst.getProjectStatus() + ";" + tempConst.getProgressStatus() + ";" + tempConst.getClientName();
+                Construction obj = q.dequeue();
+                String concat = obj.getProjectID()+ ";" + obj.getProjectCategory()+";"+ obj.getProjectLocation()+";"+
+                        dateToString(obj.getStartDate()) + ";" + obj.getEstimatedTime() + ";" + dateToString(obj.getEndDate())+";"+
+                        obj.getBudget() + ";" + obj.getProjectStatus() + ";" + obj.getProgressStatus() + ";" + obj.getClientName();
                 bufferFile.write(concat);
                 bufferFile.newLine();
-                obj = q.dequeue();
-                tempQ.enqueue(tempConst);
+                tempQ.enqueue(obj);
             }
             tempToOriginalQueue(tempQ, q);
             bufferFile.flush();
             fileWrite.close();
             bufferFile.close();
-            System.out.println("Done update ~~ sayonara");
+            System.out.println("Done update ~~");
         }catch (Error e){
             System.err.println("Cannot update the file!!!");
         }
     }
     public static void displayQueue (Queue q){
-        Object obj = q.dequeue();
         Queue tempQ = new Queue();
         while (!q.isEmpty()){
-            Construction tempConst = (Construction) obj;
-            System.out.println(tempConst);
-            obj = q.dequeue();
-            tempQ.enqueue(tempConst);
+            Construction obj = q.dequeue();
+            System.out.println(obj);
+            tempQ.enqueue(obj);
         }
         tempToOriginalQueue(tempQ, q);
     }
-
     public static String dateToString(Date d){
         String year = String.valueOf(d.getYear() + 1900);
         String month = String.valueOf(d.getMonth());
@@ -360,12 +472,10 @@ public class QueueMain {
         stringDate += year+"-"+month+"-"+date ;
         return stringDate;
     }
-
     public static int estimatedDate(Date start, Date end){
         int year = end.getYear() - start.getYear() ;
         return year;
     }
-
     public static boolean getYesOrNo (String message){
         Scanner userIn = new Scanner(System.in);
         System.out.print(message + " (y/n) : ");

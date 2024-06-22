@@ -174,10 +174,10 @@ public class Main {
         System.out.println("Enter the Location you want to find : ");
         String location = in.nextLine();
 
-        Object obj = list.getFirst();
+        Construction obj = list.getFirst();
         while (obj != null){
-            Construction temp = (Construction) obj;
-            if (temp.getProjectLocation().contains(location)){
+
+            if (obj.getProjectLocation().toLowerCase().contains(location.toLowerCase())){
                 count++;
             }
             obj = list.getNext();
@@ -250,7 +250,7 @@ public class Main {
             Construction temp = (Construction) obj;
             switch(field){
                 case 1:
-                    if(temp.getProjectID().contains(key)){
+                    if(temp.getProjectID().contains(key.toUpperCase())){
                         found = true;
                         if (display){
                             System.out.println(temp);
@@ -286,7 +286,7 @@ public class Main {
             obj = list.getNext();
         }
         System.out.println(!found ? "\n\nThere is no match data" : "");
-        if(update){
+        if(update && found){
             Scanner userIn = new Scanner(System.in);
             System.out.print("Project ID you want to update : ");
             String updateKey = userIn.next();

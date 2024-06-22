@@ -111,7 +111,7 @@ public class Construction {
                         "\n| %-18s | %-28s |" +
                         "\n---------------------------------------------------" +
                         "\n| Project ID         | %-28s |" +
-                        "\n| Project Name       | %-28s |" +
+                        "\n| Client Name        | %-28s |" +
                         "\n| Project Category   | %-28s |" +
                         "\n| Project Location   | %-28s |" +
                         "\n| Project Start Date | %-20s |" +
