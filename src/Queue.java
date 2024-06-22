@@ -5,24 +5,24 @@ public class Queue extends LinkedList
         super();
     }
 
-    public void enqueue (Object obj)
+    public void enqueue (Construction obj)
     {
         insertAtBack(obj);
     }
 
-    public Object dequeue()
+    public Construction dequeue()
     {
         return removeFromFront();
     }
 
-    public Object getFront()
+    public Construction getFront()
     {
         return getFirst();
     }
 
-    public Object getEnd()
+    public Construction getEnd()
     {
-        Object obj = removeFromBack();
+        Construction obj = removeFromBack();
         insertAtBack(obj);
         return obj;
     }

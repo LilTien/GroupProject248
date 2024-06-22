@@ -26,6 +26,13 @@ public class Main {
                     userInput = true;
                 }
             }
+            userIn.nextLine();
+            /*displayList(constructionList);
+            System.out.println("Enter id: ");
+            String proID = userIn.nextLine();
+            constructionList.removeNode(proID);
+            displayList(constructionList);*/
+
             System.out.println("Please Choose: ");
             System.out.println("1. View data ");
             System.out.println("2. Add data ");
@@ -330,27 +337,10 @@ public class Main {
         String nameKey = userIn.nextLine();
         isRemove = getYesOrNo("Are you sure you want to remove the data?");
 
-        Object obj = list.getFirst();
+        Construction obj = list.getFirst();
         if(isRemove){
-            if(!list.isEmpty()) {
-                obj = list.removeFromFront();
-                while (!list.isEmpty()) {
-                    Construction reListConstruct = (Construction) obj;
-                    if(!reListConstruct.getProjectID().equalsIgnoreCase(nameKey)){
-                        tempLL.insertAtFront(reListConstruct);
-                    }
-                    obj = list.removeFromFront();
-                }
-            }else{
-                System.err.println("The List is empty");
-            }
-
-            while(!tempLL.isEmpty()){
-                obj = tempLL.removeFromFront();
-                list.insertAtFront(obj);
-            }
+            list.removeNode(nameKey);
             writeListtoFile(list, "constructionData.txt");
-
         }
     }
     public static void updateList(LinkedList list , String projectID) throws IOException{
@@ -460,11 +450,11 @@ public class Main {
         }
     }
     public static void displayList (LinkedList list){
-        Object obj = list.getFirst();
+        Construction obj = list.getFirst();
         while (obj != null){
-            Construction tempConst = (Construction) obj;
-            System.out.println(tempConst);
+            System.out.println(obj);
             obj = list.getNext();
+
         }
     }
 

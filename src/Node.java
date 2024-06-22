@@ -1,6 +1,6 @@
 public class Node           // class Node is used to create a Node
 {
-    Object data;
+    Construction data;
     Node link;
 
     //Default constructor
@@ -11,20 +11,20 @@ public class Node           // class Node is used to create a Node
     }
 
     //Normal constructor
-    public Node(Object data)
+    public Node(Construction data)
     {
         this.data = data;
         link = null;
     }
 
-    public Node(Object data, Node next)
+    public Node(Construction data, Node next)
     {
         this.data = data;
         this.link = next;
     }
 
     //Update data
-    public void setData(Object newData)
+    public void setData(Construction newData)
     {
         data = newData;
     }
@@ -35,7 +35,7 @@ public class Node           // class Node is used to create a Node
         link = newNext;
     }
     //To get the data
-    public Object getData()
+    public Construction getData()
     {
         return data;
     }

@@ -12,4 +12,3 @@ P011;I;Shah Alam, Selangor;2024-9-5;300;2025-6-31;500000.0;pending;NA;Sudo
 P012;R;Mont Kiara, Kuala Lumpur;2024-8-25;120;2025-0-23;200000.0;approve;delay;Yamaguchi
 P014;I;Taiping, Perak;2024-10-15;180;2025-4-13;800000.0;approve;in progress;Dae hee
 P016;C;Miri, Sarawak;2024-11-5;180;2025-5-4;600000.0;approve;in progress;Kei
-P017;I;Cheras, Kuala Lumpur;2024-11-20;240;2025-7-19;1200000.0;pending;NA;Karuizawa
