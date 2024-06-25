@@ -341,6 +341,14 @@ public class Main {
         if(second){
             writeListtoFile(listBelow, secondFile);
         }
+        System.out.println("\n\n-----------------------");
+        System.out.println("List above : ");
+        System.out.println("-----------------------");
+        displayList(listAbove);
+        System.out.println("\n\n-----------------------");
+        System.out.println("List below : ");
+        System.out.println("-----------------------");
+        displayList(listBelow);
     }
     public static void removeData(LinkedList list) throws IOException{
         Scanner userIn = new Scanner(System.in);

@@ -285,6 +285,15 @@ public class QueueMain {
             writeQueuetoFile(belowQ, secondFile);
         }
         tempToOriginalQueue(tempQ, q);
+
+        System.out.println("\n\n-----------------------");
+        System.out.println("List above : ");
+        System.out.println("-----------------------");
+        displayQueue(aboveQ);
+        System.out.println("\n\n-----------------------");
+        System.out.println("List below : ");
+        System.out.println("-----------------------");
+        displayQueue(belowQ);
     }
     public static void countData (Queue q) throws IOException{
 
